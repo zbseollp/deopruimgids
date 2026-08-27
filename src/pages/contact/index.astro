@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ContactForm from '../../components/ContactForm.astro';
 ---
 
 <BaseLayout title="DeOpruimGids.nl - Contactpagina" description="Op deze contactpagina kun je ons vragen stellen of een opmerking achterlaten met ons contactformulier. Wij komen zo snel mogelijk bij je terug.">
@@ -27,6 +28,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 </div>
 </section>
 </div></body></html>`} />
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="wrap-narrow">
+      <h2 style="margin-bottom:1.2rem">Stuur ons een bericht</h2>
+      <ContactForm siteName="deOpruimgids.nl" />
     </div>
   </section>
 </BaseLayout>
