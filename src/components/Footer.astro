@@ -1,34 +1,56 @@
 ---
+import { getCollection } from 'astro:content';
+
 const year = new Date().getFullYear();
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const popular = posts.slice(0, 6);
+
+const about = [
+  { href: '/over-ons/', label: 'Over ons' },
+  { href: '/contact/', label: 'Contact' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/sitemap/', label: 'Sitemap' },
+];
 ---
 
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-      <div>
+      <div class="footer-brand">
         <div class="footer-logo">
           <img src="/logo.svg" alt="deOpruimgids.nl" width="190" height="24" />
         </div>
         <p>
           Onafhankelijke adviezen over opruimen en schoonmaken. Wij vergelijken de
-          beste producten voor een opgeruimd huis, een nette werkplek en een
-          duurzaam ingerichte woning.
+          beste producten voor een opgeruimd huis, een nette werkplek en een duurzaam
+          ingerichte woning.
         </p>
+      </div>
+
+      <div>
+        <h4>Nieuwste artikelen</h4>
+        <ul>
+          {popular.map((p) => (
+            <li><a href={`/${p.id}/`}>{p.data.title}</a></li>
+          ))}
+        </ul>
       </div>
 
       <div>
         <h4>Over deze site</h4>
         <ul>
-          <li><a href="/over-ons/">Over ons</a></li>
-          <li><a href="/contact/">Contact</a></li>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/sitemap/">Sitemap</a></li>
+          {about.map((a) => (
+            <li><a href={a.href}>{a.label}</a></li>
+          ))}
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span>&copy; {year} deOpruimgids.nl — Alle rechten voorbehouden.</span>
+      <span>&copy; {year} deOpruimgids.nl &mdash; Alle rechten voorbehouden.</span>
       <span>Opruim- en schoonmaakproducten vergeleken.</span>
     </div>
   </div>
