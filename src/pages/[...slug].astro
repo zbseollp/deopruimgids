@@ -19,9 +19,14 @@ export async function getStaticPaths() {
 }
 
 const { entry, related } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+
+// ruwe leestijd op basis van de body (200 woorden per minuut)
+const readingTime = entry.body
+  ? Math.max(1, Math.round(entry.body.split(/[^A-Za-z0-9]+/).filter(Boolean).length / 200))
+  : undefined;
 ---
 
-<BlogPostLayout entry={entry} related={related}>
+<BlogPostLayout entry={entry} related={related} headings={headings} readingTime={readingTime}>
   <Content />
 </BlogPostLayout>
