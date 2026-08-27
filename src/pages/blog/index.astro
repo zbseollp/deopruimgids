@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const dateFmt = (d: Date) =>
+  new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+---
+
+<BaseLayout
+  title="Blog — deOpruimgids.nl"
+  description="Artikelen, tips en achtergronden over opruimen, schoonmaken en het inrichten van een opgeruimd huis."
+>
+  <section class="hero">
+    <div class="wrap lead">
+      <h1>Blog</h1>
+      <p>
+        Artikelen, tips en achtergronden over opruimen en schoonmaken. Van
+        praktische opruimtips tot verhalen die je aandacht vasthouden — hier vind
+        je alles wat we schrijven.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Alle artikelen</h2>
+        <p>{posts.length} artikelen, nieuwste eerst.</p>
+      </div>
+
+      <div class="grid grid-3">
+        {posts.map((post) => (
+          <article class="card">
+            {post.data.heroImage && (
+              <a href={`/${post.id}/`} class="card-media">
+                <img src={post.data.heroImage} alt={post.data.title} loading="lazy" />
+              </a>
+            )}
+            <div class="card-body">
+              <h3><a href={`/${post.id}/`}>{post.data.title}</a></h3>
+              <p>{post.data.description}</p>
+              <div class="meta">
+                <time datetime={post.data.pubDate.toISOString()}>{dateFmt(post.data.pubDate)}</time>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

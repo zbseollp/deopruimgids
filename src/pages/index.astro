@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const recent = posts.slice(0, 6);
+
+const dateFmt = (d: Date) =>
+  new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+---
+
+<BaseLayout
+  title="DeOpruimGids.nl - Vergelijk opruim- en schoonmaakproducten"
+  description="Op onze website vergelijken wij de beste producten in het teken van opruimen en schoonmaken. Bekijk onze reviews en koop de beste, meest goedkope producten."
+>
+  <section class="hero">
+    <div class="wrap lead">
+      <h1>deOpruimgids.nl</h1>
+      <p>
+        Een ruimte of woning opgeruimd houden, kan vrij lastig zijn. Het is al vrij
+        snel een rommeltje, zelfs als je er alles aan doet om het zo opgeruimd
+        mogelijk te houden. Je bent simpelweg vaak van bijvoorbeeld je huisgenoten of
+        gezinsleden afhankelijk. Gelukkig kun je wel te allen tijde van de beste
+        opruimproducten gebruik maken.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="#blok1">Lees meer</a>
+        <a class="btn btn-ghost" href="/blog/">Naar de blog</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Nieuwste artikelen</h2>
+        <p>Bekijk hieronder de meest recente artikelen van onze redactie.</p>
+      </div>
+
+      <div class="grid grid-3">
+        {recent.map((post) => (
+          <article class="card">
+            {post.data.heroImage && (
+              <a href={`/${post.id}/`} class="card-media">
+                <img src={post.data.heroImage} alt={post.data.title} loading="lazy" />
+              </a>
+            )}
+            <div class="card-body">
+              <h3><a href={`/${post.id}/`}>{post.data.title}</a></h3>
+              <p>{post.data.description}</p>
+              <div class="meta">
+                <time datetime={post.data.pubDate.toISOString()}>{dateFmt(post.data.pubDate)}</time>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div style="text-align:center;margin-top:2.5rem">
+        <a class="btn" href="/blog/">Alle artikelen bekijken</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="blok1">
+    <div class="wrap-narrow prose">
+      <h2>De beste opruimproducten</h2>
+      <p>
+        Wil je je woning graag vakkundig opruimen? De eerste stap is het checken van
+        deze website. Op deze website vind je namelijk de beste adviezen over de beste
+        opruimproducten van dit moment. Door voor deze producten te kiezen, weet je
+        zeker dat je je woning snel, vakkundig en effici&euml;nt op kunt ruimen. Veel
+        van deze opruimproducten zijn ook nog duurzaam. Dat houdt in dat je in principe
+        jarenlang van deze opruimproducten gebruik kunt maken.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="cta-band">
+        <div>
+          <h2>Een vraag over opruimen?</h2>
+          <p>Laat het ons weten &mdash; we denken graag met je mee.</p>
+        </div>
+        <a class="btn" href="/contact/">Neem contact op</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
