@@ -1,32 +1,59 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '../layouts/BlogPostLayout.astro';
+import ProductLayout from '../layouts/ProductLayout.astro';
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
+  const productEntries = await getCollection('products');
 
   const sorted = [...blogEntries].sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
 
-  return blogEntries.map((entry) => ({
+  const posts = blogEntries.map((entry) => ({
     params: { slug: entry.id },
     props: {
       entry,
+      type: 'post',
       related: sorted.filter((p) => p.id !== entry.id).slice(0, 3),
     },
   }));
+
+  // placeholders delen de root-namespace met de posts
+  const products = productEntries.map((entry) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      type: 'product',
+      related: [],
+      siblings: entry.data.category
+        ? productEntries
+            .filter((p) => p.data.category === entry.data.category && p.id !== entry.id)
+            .sort((a, b) => a.data.label.localeCompare(b.data.label, 'nl'))
+        : [],
+    },
+  }));
+
+  return [...posts, ...products];
 }
 
-const { entry, related } = Astro.props;
-const { Content, headings } = await render(entry);
+const { entry, type, related, siblings } = Astro.props;
+
+const rendered = type === 'post' ? await render(entry) : null;
+const Content = rendered?.Content;
+const headings = rendered?.headings ?? [];
 
 // ruwe leestijd op basis van de body (200 woorden per minuut)
-const readingTime = entry.body
+const readingTime = type === 'post' && entry.body
   ? Math.max(1, Math.round(entry.body.split(/[^A-Za-z0-9]+/).filter(Boolean).length / 200))
   : undefined;
 ---
 
-<BlogPostLayout entry={entry} related={related} headings={headings} readingTime={readingTime}>
-  <Content />
-</BlogPostLayout>
+{type === 'post' ? (
+  <BlogPostLayout entry={entry} related={related} headings={headings} readingTime={readingTime}>
+    <Content />
+  </BlogPostLayout>
+) : (
+  <ProductLayout entry={entry} siblings={siblings} />
+)}

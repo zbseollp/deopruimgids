@@ -1,0 +1,66 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+const { entry, siblings = [] } = Astro.props;
+const d = entry.data;
+---
+
+<BaseLayout
+  title={`${d.title} — deOpruimgids.nl`}
+  description={`${d.title}: onze vergelijking van ${d.label.toLowerCase()} is in voorbereiding.`}
+  noindex={true}
+>
+  <section class="hero hero-compact">
+    <div class="wrap lead">
+      {d.category && <div class="eyebrow-line">{d.category}</div>}
+      <h1>{d.title}</h1>
+      <p class="sub">
+        Deze vergelijking is in voorbereiding. Zodra onze redactie
+        {' '}{d.label.toLowerCase()}{' '} heeft getest, vind je hier de volledige top 10
+        met beoordelingen, prijzen en aankoopadvies.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Kruimelpad">
+      <a href="/">Home</a>
+      <span class="sep">›</span>
+      {d.category && (
+        <>
+          <span>{d.category}</span>
+          <span class="sep">›</span>
+        </>
+      )}
+      <span>{d.label}</span>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="wrap-narrow">
+      <div class="notice">
+        <h2>Nog in de maak</h2>
+        <p>
+          We werken aan deze pagina. Er staat bewust nog geen inhoud &mdash; liever
+          niets dan iets onbetrouwbaars. Wil je op de hoogte blijven of heb je een
+          tip over {d.label.toLowerCase()}? Laat het ons weten.
+        </p>
+        <div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.4rem">
+          <a class="btn" href="/contact/">Neem contact op</a>
+          <a class="btn btn-quiet" href="/blog/">Lees onze artikelen</a>
+        </div>
+      </div>
+
+      {siblings.length > 0 && (
+        <div style="margin-top:3rem">
+          <h2 style="font-size:1.25rem">Meer uit {d.category}</h2>
+          <ul class="chip-list" style="margin-top:1rem">
+            {siblings.map((s: any) => (
+              <li><a href={`/${s.id}/`}>{s.data.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

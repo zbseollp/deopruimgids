@@ -204,6 +204,86 @@ img { max-width: 100%; height: auto; display: block; }
   .nav .nav-cta { margin: .4rem 0 0; text-align: center; }
 }
 
+/* ---------- dropdownmenu (zoals het originele WordPress-menu) ---------- */
+.has-dropdown { position: relative; }
+.dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: .5rem .75rem;
+  border-radius: var(--radius-sm);
+  transition: color .18s var(--ease), background .18s var(--ease);
+}
+.dropdown-toggle:hover { color: var(--text-strong); background: var(--bg-sunken); }
+.dropdown-toggle svg { transition: transform .2s var(--ease); }
+.has-dropdown.open .dropdown-toggle { color: var(--text-strong); background: var(--bg-sunken); }
+.has-dropdown.open .dropdown-toggle svg { transform: rotate(180deg); }
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + .4rem);
+  left: 0;
+  min-width: 216px;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: .4rem;
+  z-index: 70;
+}
+.has-dropdown.open .dropdown { display: block; }
+.dropdown a {
+  display: block;
+  padding: .55rem .75rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: .95rem;
+  font-weight: 400;
+  color: var(--text);
+  white-space: nowrap;
+}
+.dropdown a:hover { background: var(--bg-sunken); color: var(--orange-dark); }
+
+@media (max-width: 920px) {
+  .has-dropdown { width: 100%; }
+  .dropdown-toggle {
+    width: 100%;
+    justify-content: space-between;
+    padding: .85rem 1rem;
+    font-size: 1.02rem;
+  }
+  .dropdown {
+    position: static;
+    box-shadow: none;
+    border: 0;
+    border-left: 2px solid var(--line);
+    border-radius: 0;
+    margin: 0 0 .4rem .9rem;
+    padding: .2rem 0 .2rem .5rem;
+    min-width: 0;
+  }
+  .dropdown a { white-space: normal; }
+}
+
+/* melding op placeholderpagina's */
+.notice {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--orange);
+  border-radius: var(--radius);
+  background: var(--bg-sunken);
+  padding: 1.6rem 1.75rem;
+}
+.notice h2 { margin: 0 0 .5rem; font-size: 1.2rem; }
+.notice p { margin: 0; color: var(--text-muted); }
+
 /* ============================ hero ============================ */
 .hero {
   position: relative;
