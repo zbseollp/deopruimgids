@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostList from '../../../components/PostList.astro';
+import { PAGE_SIZE } from '../../../lib/pagination';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('blog')).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+  const totalPages = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+
+  // pagina 1 blijft op /blog/ staan, dus hier alleen 2 en verder
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        posts: all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+        allPosts: all,
+        page,
+        totalPages,
+        total: all.length,
+      },
+    };
+  });
+}
+
+const { posts, allPosts, page, totalPages, total } = Astro.props;
+---
+
+<BaseLayout
+  title={`Blog — pagina ${page} — deOpruimgids.nl`}
+  description="Artikelen, tips en achtergronden over opruimen, schoonmaken en het inrichten van een opgeruimd huis."
+>
+  <section class="hero hero-compact">
+    <div class="wrap lead">
+      <div class="eyebrow-line">Redactie</div>
+      <h1>Blog</h1>
+      <p class="sub">Pagina {page} van {totalPages}.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Kruimelpad">
+      <a href="/">Home</a>
+      <span class="sep">›</span>
+      <a href="/blog/">Blog</a>
+      <span class="sep">›</span>
+      <span>Pagina {page}</span>
+    </nav>
+  </div>
+
+  <section class="section">
+    <div class="wrap">
+      <PostList
+        posts={posts}
+        allPosts={allPosts}
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        basePath="/blog"
+      />
+    </div>
+  </section>
+</BaseLayout>
